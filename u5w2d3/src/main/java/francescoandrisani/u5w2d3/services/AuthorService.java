@@ -41,16 +41,12 @@ public class AuthorService {
 
     // 4 - PUT /blogPosts/id => modifica il blog post con id specificato
     public Author findByIdAndUpdate(int id, Author updatedAut){
-        for (Author author : this.authorList) {
-            if (author.getId() == id) {
-                author.setName(updatedAut.getName());
-                author.setSurname(updatedAut.getSurname());
-                author.setEmail(updatedAut.getEmail());
-                author.setBirthDate(updatedAut.getBirthDate());
-                return this.authorDAO.save(author);
-            }
-        }
-        throw new NotFound(id);
+        Author author = this.getAuthorById(id);
+        author.setName(updatedAut.getName());
+        author.setSurname(updatedAut.getSurname());
+        author.setEmail(updatedAut.getEmail());
+        author.setBirthDate(updatedAut.getBirthDate());
+        return this.authorDAO.save(author);
     }
     // ---------------------------------------------------
 
@@ -58,7 +54,6 @@ public class AuthorService {
     public void findByIdAndDelete(int id) {
         Author found = this.getAuthorById(id);
         this.authorDAO.delete(found);
-
     }
     // ---------------------------------------------------
 }

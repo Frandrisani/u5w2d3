@@ -21,14 +21,15 @@ public class BlogPostService {
     // 1 - GET /blogPosts => ritorna la lista di blog post
 
     public Page<BlogPost> getBlogPosts() {
-        Pageable pageable = PageRequest.of( 10,  10, Sort.Direction.valueOf("category"));
+        Pageable pageable = PageRequest.of( 0,  50, Sort.Direction.valueOf("category"));
          return this.blogDAO.findAll(pageable);
     }
     // ---------------------------------------------------
 
     // 2 - GET /blogPosts/id => ritorna il blog post con id specificato
     public BlogPost getBlogPost(int id) {
-        return this.blogDAO.findById(id).orElseThrow(() -> new NotFound(id));
+
+        return this.getBlogPost(id);
     }
 
     // ---------------------------------------------------
