@@ -2,6 +2,7 @@ package francescoandrisani.u5w2d3.controllers;
 import francescoandrisani.u5w2d3.entities.BlogPost;
 import francescoandrisani.u5w2d3.services.BlogPostService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -15,7 +16,7 @@ public class BlogPostController {
 
     // GET - LISTA DEI POST
     @GetMapping
-    public List<BlogPost> getAllBlogPosts() {
+    public Page<BlogPost> getAllBlogPosts() {
         return this.blogPostService.getBlogPosts();
     }
 

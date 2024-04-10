@@ -3,12 +3,13 @@ import francescoandrisani.u5w2d3.entities.BlogPost;
 import francescoandrisani.u5w2d3.exceptions.NotFound;
 import francescoandrisani.u5w2d3.repositories.BlogDAO;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
 
 @Service
 public class BlogPostService {
@@ -18,20 +19,16 @@ public class BlogPostService {
 
     // ---------------------------------------------------
     // 1 - GET /blogPosts => ritorna la lista di blog post
-    private List<BlogPost> postList = new ArrayList<>();
-    public List<BlogPost> getBlogPosts() {
-        return this.postList;
+
+    public Page<BlogPost> getBlogPosts() {
+        Pageable pageable = PageRequest.of( 10,  10, Sort.Direction.valueOf("category"));
+         return this.blogDAO.findAll(pageable);
     }
     // ---------------------------------------------------
 
     // 2 - GET /blogPosts/id => ritorna il blog post con id specificato
     public BlogPost getBlogPost(int id) {
-        for (BlogPost post : this.postList) {
-            if (post.getId() == id) {
-                return post;
-            }
-        }
-        throw new NotFound(id);
+        return this.blogDAO.findById(id).orElseThrow(() -> new NotFound(id));
     }
 
     // ---------------------------------------------------
@@ -47,29 +44,19 @@ public class BlogPostService {
 
     // 4 - PUT /blogPosts/id => modifica il blog post con id specificato
     public BlogPost findByIdAndUpdate(int id, BlogPost updatedPost){
-        for (BlogPost post : this.postList) {
-            if (post.getId() == id) {
-                post.setTitle(updatedPost.getTitle());
-                post.setContent(updatedPost.getContent());
-                post.setTimeForLecture(updatedPost.getTimeForLecture());
-                return post;
-            }
-        }
-        throw new NotFound(id);
+        BlogPost post = this.getBlogPost(id);
+        post.setTitle(updatedPost.getTitle());
+        post.setContent(updatedPost.getContent());
+        post.setTimeForLecture(updatedPost.getTimeForLecture());
+        return this.blogDAO.save(post);
+
     }
     // ---------------------------------------------------
 
     // 5 - DELETE /blogPosts/id => elimina il blog post con id specificato
     public void findByIdAndDelete(int id) {
-        Iterator<BlogPost> iterator = this.postList.iterator();
-        while (iterator.hasNext()) {
-            BlogPost current = iterator.next();
-            if (current.getId() == id) {
-                iterator.remove();
-
-            }
-
-        }
+        BlogPost found = this.getBlogPost(id);
+        this.blogDAO.delete(found);
 
     }
 }
