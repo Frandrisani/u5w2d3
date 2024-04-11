@@ -15,5 +15,4 @@ public class PostPayload {
     @Setter
     private String cover;
 
-
 }

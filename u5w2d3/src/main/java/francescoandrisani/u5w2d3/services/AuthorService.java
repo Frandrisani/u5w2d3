@@ -1,6 +1,5 @@
 package francescoandrisani.u5w2d3.services;
 import francescoandrisani.u5w2d3.entities.Author;
-import francescoandrisani.u5w2d3.entities.BlogPost;
 import francescoandrisani.u5w2d3.exceptions.NotFound;
 import francescoandrisani.u5w2d3.repositories.AuthorDAO;
 import org.springframework.beans.factory.annotation.Autowired;
