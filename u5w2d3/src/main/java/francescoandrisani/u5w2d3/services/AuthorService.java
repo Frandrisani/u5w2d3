@@ -4,7 +4,13 @@ import francescoandrisani.u5w2d3.entities.BlogPost;
 import francescoandrisani.u5w2d3.exceptions.NotFound;
 import francescoandrisani.u5w2d3.repositories.AuthorDAO;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.RequestBody;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -18,9 +24,9 @@ public class AuthorService {
     // ---------------------------------------------------
 
     // 1 - GET /authors => ritorna la lista di autori
-    private List<Author> authorList = new ArrayList<>();
-    public List<Author> getAuthors(){
-        return this.authorDAO.findAll();
+    public Page<Author> getAuthors(){
+        Pageable pageable = PageRequest.of( 0,  50, Sort.by("name"));
+        return this.authorDAO.findAll(pageable);
     }
     // ---------------------------------------------------
 
@@ -31,7 +37,7 @@ public class AuthorService {
     // ---------------------------------------------------
 
     // 3 - POST /authors => crea un nuovo autore
-    public Author creaNuovoAuthor(Author body){
+    public Author creaNuovoAuthor(@RequestBody Author body){
         Random random = new Random();
         body.setId(random.nextInt(1,100));
         body.setAvatar( "https://ui-avatars.com/api/?name="+ body.getName() + "+" + body.getSurname());

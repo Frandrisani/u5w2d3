@@ -2,9 +2,8 @@ package francescoandrisani.u5w2d3.controllers;
 import francescoandrisani.u5w2d3.entities.Author;
 import francescoandrisani.u5w2d3.services.AuthorService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RestController
 @RequestMapping("/authors")
@@ -14,7 +13,7 @@ public class AuthorController {
     public AuthorService authorService;
 
     @GetMapping
-    public List<Author> getAllAuthors(){
+    public Page<Author> getAllAuthors(){
         return this.authorService.getAuthors();
     }
 
