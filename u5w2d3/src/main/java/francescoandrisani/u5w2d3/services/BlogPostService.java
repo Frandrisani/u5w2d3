@@ -1,7 +1,8 @@
 package francescoandrisani.u5w2d3.services;
+import com.cloudinary.Cloudinary;
+import com.cloudinary.utils.ObjectUtils;
 import francescoandrisani.u5w2d3.entities.BlogPost;
-import francescoandrisani.u5w2d3.exceptions.NotFound;
-import francescoandrisani.u5w2d3.payloads.PostPayload;
+import francescoandrisani.u5w2d3.payloads.NewPostDTO;
 import francescoandrisani.u5w2d3.repositories.BlogDAO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -9,14 +10,19 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
-import java.util.*;
+import java.io.IOException;
 
 @Service
 public class BlogPostService {
 
     @Autowired
     private BlogDAO blogDAO;
+
+    @Autowired
+    private Cloudinary cloudinaryUploader;
+
 
     // ---------------------------------------------------
     // 1 - GET /blogPosts => ritorna la lista di blog post
@@ -29,20 +35,15 @@ public class BlogPostService {
 
     // 2 - GET /blogPosts/id => ritorna il blog post con id specificato
     public BlogPost getBlogPost(int id) {
-
         return this.getBlogPost(id);
     }
 
     // ---------------------------------------------------
 
     // 3 - POST /blogPosts => inserisce un nuovo blog post
-    public BlogPost addBlogPost(PostPayload body) {
-        BlogPost blogPost = new BlogPost();
-        blogPost.setCategory(body.getCategory());
-        blogPost.setTitle(body.getTitle());
-        blogPost.setContent(body.getContent());
-        blogPost.setCover("https://picsum.photos/200/300");
-        return blogDAO.save(blogPost);
+    public BlogPost addBlogPost(NewPostDTO body) {
+        BlogPost newPost = new BlogPost(body.category(),body.title(), body.content(),body.timeForLecture(),"https://picsum.photos/200/300", body.author());
+        return blogDAO.save(newPost);
     }
     // ---------------------------------------------------
 
@@ -62,5 +63,10 @@ public class BlogPostService {
         BlogPost found = this.getBlogPost(id);
         this.blogDAO.delete(found);
 
+    }
+
+    public String uploadImage(MultipartFile image) throws IOException {
+        String url = (String) cloudinaryUploader.uploader().upload(image.getBytes(), ObjectUtils.emptyMap()).get("url");
+        return url;
     }
 }
